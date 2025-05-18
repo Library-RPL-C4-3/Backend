@@ -41,6 +41,28 @@ class BookController {
       next(err);
     }
   }
+<<<<<<< HEAD
+=======
+
+  static async searchBooks(req, res, next) {
+    try {
+      const books = await bookService.searchBooks(req.query.q || "");
+      res.status(200).json({ success: true, data: books });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async getBooksByCategory(req, res, next) {
+    try {
+      const books = await bookService.getBooksByCategory(req.params.id);
+      res.status(200).json({ success: true, data: books });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+>>>>>>> 847180b (feat(book,member): adding feature to search book,search member and get book by category id)
 }
 
 module.exports = BookController;

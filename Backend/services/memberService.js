@@ -59,9 +59,32 @@ async function deleteMember(nim) {
   }
 }
 
+<<<<<<< HEAD
+=======
+async function searchMembers(keyword) {
+  const like = `%${keyword}%`;
+  const [rows] = await db.query(
+    `SELECT * FROM members
+     WHERE nim LIKE ? OR name LIKE ? OR email LIKE ?`,
+    [like, like, like]
+  );
+
+  if (rows.length === 0) {
+    throw ApiError.notFound(`Anggota dengan keyword "${keyword}" tidak ditemukan`);
+  }
+
+  return rows;
+}
+
+
+>>>>>>> 847180b (feat(book,member): adding feature to search book,search member and get book by category id)
 module.exports = {
   getAllMembers,
   createMember,
   updateMember,
   deleteMember,
+<<<<<<< HEAD
+=======
+  searchMembers
+>>>>>>> 847180b (feat(book,member): adding feature to search book,search member and get book by category id)
 };
