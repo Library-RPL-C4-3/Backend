@@ -24,6 +24,3 @@ app.use(apiErrorHandler);
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
-
-/* okee
-adomoamda */
