@@ -1,25 +1,29 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const app = express();
+
 
 const bookRoutes = require("./routes/bookRoutes");
 const memberRoutes = require("./routes/memberRoutes");
 const apiErrorHandler = require("./errors/apiErrorHandler");
+const loanRoutes = require("./routes/loanRoutes");
 
+
+
+const app = express();
 const PORT = process.env.PORT || 5000;
 
-if (isNaN(PORT)) {
-  console.error("PORT environment variable is invalid or missing.");
-  process.exit(1);
-}
-
 app.use(cors());
+
+// Middleware JSON
 app.use(express.json());
 
+// Routes
 app.use("/api/books", bookRoutes);
 app.use("/api/members", memberRoutes);
+app.use("/api/loans", loanRoutes);
 
+// Error Handler 
 app.use(apiErrorHandler);
 
 app.listen(PORT, () => {

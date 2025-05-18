@@ -72,8 +72,6 @@ async function deleteBook(id) {
   }
 }
 
-<<<<<<< HEAD
-=======
 async function searchBooks(keyword) {
   const like = `%${keyword}%`;
   const [rows] = await db.query(
@@ -103,15 +101,11 @@ async function getBooksByCategory(categoryId) {
 }
 
 
->>>>>>> 847180b (feat(book,member): adding feature to search book,search member and get book by category id)
 module.exports = {
   getAllBooks,
   createBook,
   updateBook,
   deleteBook,
-<<<<<<< HEAD
-=======
   searchBooks,
   getBooksByCategory
->>>>>>> 847180b (feat(book,member): adding feature to search book,search member and get book by category id)
 };

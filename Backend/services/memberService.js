@@ -59,8 +59,6 @@ async function deleteMember(nim) {
   }
 }
 
-<<<<<<< HEAD
-=======
 async function searchMembers(keyword) {
   const like = `%${keyword}%`;
   const [rows] = await db.query(
@@ -76,15 +74,33 @@ async function searchMembers(keyword) {
   return rows;
 }
 
+async function getMemberDetail(nim) {
+  const [memberRows] = await db.query("SELECT * FROM members WHERE nim = ?", [nim]);
+  if (memberRows.length === 0) throw ApiError.notFound(`Anggota dengan NIM ${nim} tidak ditemukan`);
 
->>>>>>> 847180b (feat(book,member): adding feature to search book,search member and get book by category id)
+  const member = memberRows[0];
+
+  const [loanRows] = await db.query(
+    `SELECT b.title AS book_title, l.loan_date, l.due_date, l.return_date, l.status
+   FROM loans l
+   JOIN books b ON l.book_id = b.id
+   WHERE l.member_nim = ? AND l.status = 'borrowed'
+   ORDER BY l.loan_date DESC`,
+    [nim]
+  );
+
+  return {
+    member,
+    loans: loanRows
+  };
+}
+
+
 module.exports = {
   getAllMembers,
   createMember,
   updateMember,
   deleteMember,
-<<<<<<< HEAD
-=======
-  searchMembers
->>>>>>> 847180b (feat(book,member): adding feature to search book,search member and get book by category id)
+  searchMembers,
+  getMemberDetail
 };

@@ -41,8 +41,6 @@ class BookController {
       next(err);
     }
   }
-<<<<<<< HEAD
-=======
 
   static async searchBooks(req, res, next) {
     try {
@@ -62,7 +60,6 @@ class BookController {
     }
   }
 
->>>>>>> 847180b (feat(book,member): adding feature to search book,search member and get book by category id)
 }
 
 module.exports = BookController;

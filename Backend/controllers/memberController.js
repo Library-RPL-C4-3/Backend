@@ -36,8 +36,6 @@ class MemberController {
       next(err);
     }
   }
-<<<<<<< HEAD
-=======
 
   static async searchMembers(req, res, next) {
     try {
@@ -48,8 +46,16 @@ class MemberController {
     }
   }
 
+  static async getMemberDetail(req, res, next) {
+    try {
+      const data = await memberService.getMemberDetail(req.params.nim);
+      res.status(200).json({ success: true, data });
+    } catch (err) {
+      next(err);
+    }
+  }
 
->>>>>>> 847180b (feat(book,member): adding feature to search book,search member and get book by category id)
+
 }
 
 module.exports = MemberController;
