@@ -18,6 +18,17 @@ class LoanController {
       next(err);
     }
   }
+
+  static async getAllLoans(req, res, next) {
+    try {
+      const status = req.query.status;
+      const loans = await loanService.getAllLoans(status);
+      res.status(200).json({ success: true, data: loans });
+    } catch (err) {
+      next(err);
+    }
+  }
+
 }
 
 module.exports = LoanController;

@@ -85,7 +85,39 @@ async function returnBook(loan_id) {
   }
 }
 
+async function getAllLoans(status) {
+  let query = `
+    SELECT 
+      l.id,
+      l.book_id,
+      b.title AS book_title,
+      l.member_nim,
+      m.name AS member_name,
+      l.loan_date,
+      l.due_date,
+      l.return_date,
+      l.status
+    FROM loans l
+    JOIN books b ON l.book_id = b.id
+    JOIN members m ON l.member_nim = m.nim
+  `;
+
+  const values = [];
+
+  if (status === "borrowed" || status === "returned") {
+    query += " WHERE l.status = ?";
+    values.push(status);
+  }
+
+  query += " ORDER BY l.loan_date DESC";
+
+  const [rows] = await db.query(query, values);
+  return rows;
+}
+
+
 module.exports = {
   borrowBook,
-  returnBook
+  returnBook,
+  getAllLoans
 };
