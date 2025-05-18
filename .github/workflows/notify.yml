@@ -1,0 +1,22 @@
+name: Notify WhatsApp Group on GitHub Push
+
+on:
+  push:
+    branches:
+      - main  
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send WhatsApp Notification via Twilio
+        env:
+          TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
+          TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
+          WHATSAPP_GROUP_ID: ${{ secrets.WHATSAPP_GROUP_ID }}
+        run: |
+          curl -X POST "https://api.twilio.com/2010-04-01/Accounts/$TWILIO_ACCOUNT_SID/Messages.json" \
+          --data-urlencode "From=whatsapp:+14155238886" \
+          --data-urlencode "To=whatsapp:$WHATSAPP_GROUP_ID" \
+          --data-urlencode "Body=🚀 GitHub Push Alert!\n👤 User: ${{ github.actor }}\n📜 Commit: ${{ github.event.head_commit.message }}\n⏰ Time: ${{ github.event.head_commit.timestamp }}\n🔗 Repo: https://github.com/${{ github.repository }}/commits/main" \
+          -u "$TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN"
