@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const bookController = require("../controllers/bookController");
 
+// book routes
 router.get("/", bookController.getAllBooks);
 router.post("/", bookController.createBook);
 router.put("/:id", bookController.updateBook);
