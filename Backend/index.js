@@ -7,6 +7,7 @@ const bookRoutes = require("./routes/bookRoutes");
 const memberRoutes = require("./routes/memberRoutes");
 const apiErrorHandler = require("./errors/apiErrorHandler");
 const loanRoutes = require("./routes/loanRoutes");
+const authRoutes = require("./routes/authRoutes");
 
 
 
@@ -22,6 +23,7 @@ app.use(express.json());
 app.use("/api/books", bookRoutes);
 app.use("/api/members", memberRoutes);
 app.use("/api/loans", loanRoutes);
+app.use("/api/auth", authRoutes);
 
 // Error Handler 
 app.use(apiErrorHandler);
