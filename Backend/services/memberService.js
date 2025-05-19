@@ -1,5 +1,6 @@
 const db = require("../config/db");
 const ApiError = require("../errors/apiError");
+const dayjs = require("dayjs");
 
 async function getAllMembers() {
   const [rows] = await db.query("SELECT * FROM members");
@@ -75,23 +76,66 @@ async function searchMembers(keyword) {
 }
 
 async function getMemberDetail(nim) {
+  // Ambil data member
   const [memberRows] = await db.query("SELECT * FROM members WHERE nim = ?", [nim]);
   if (memberRows.length === 0) throw ApiError.notFound(`Anggota dengan NIM ${nim} tidak ditemukan`);
-
   const member = memberRows[0];
 
+  // 2. Ambil semua peminjaman aktif
   const [loanRows] = await db.query(
-    `SELECT b.title AS book_title, l.loan_date, l.due_date, l.return_date, l.status
-   FROM loans l
-   JOIN books b ON l.book_id = b.id
-   WHERE l.member_nim = ? AND l.status = 'borrowed'
-   ORDER BY l.loan_date DESC`,
+    `SELECT 
+      b.title AS book_title,
+      l.id AS loan_id,
+      l.loan_date,
+      l.due_date,
+      l.return_date,
+      l.status
+    FROM loans l
+    JOIN books b ON l.book_id = b.id
+    WHERE l.member_nim = ? AND l.status = 'borrowed'
+    ORDER BY l.loan_date DESC`,
     [nim]
   );
 
+  //Ambil denda dari semua pinjaman milik member
+  const [penaltyRows] = await db.query(
+    `SELECT 
+      p.loan_id,
+      p.amount,
+      p.is_paid,
+      l.loan_date,
+      l.due_date,
+      l.return_date,
+      b.title AS book_title
+    FROM penalties p
+    JOIN loans l ON p.loan_id = l.id
+    JOIN books b ON l.book_id = b.id
+    WHERE l.member_nim = ?`,
+    [nim]
+  );
+
+  let total_penalty = 0;
+
+  const penalties = penaltyRows.map(p => {
+    const days_late = dayjs(p.return_date || new Date()).diff(dayjs(p.due_date), 'day');
+    total_penalty += Number(p.amount);
+    return {
+      loan_id: p.loan_id,
+      book_title: p.book_title,
+      loan_date: p.loan_date,
+      due_date: p.due_date,
+      return_date: p.return_date,
+      days_late,
+      amount: p.amount,
+      is_paid: !!p.is_paid
+    };
+  });
+
   return {
     member,
-    loans: loanRows
+    loans: loanRows,
+    penalties,
+    total_penalty
   };
 }
 

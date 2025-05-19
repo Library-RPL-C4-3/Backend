@@ -15,15 +15,17 @@ const { checkAndApplyPenalties } = require("./services/penaltyService");
 
 //cron scheduler
 cron.schedule("0 1 * * *", async () => {
-  console.log("[CRON] Mengecek denda keterlambatan...");
+  console.log("[CRON] Mulai pengecekan denda keterlambatan...");
   try {
     const result = await checkAndApplyPenalties();
-    console.log("[CRON] Denda diterapkan:", result);
+    console.log("[CRON] Selesai. Denda ditambahkan:", result.length);
   } catch (err) {
-    console.error("[CRON] Gagal menghitung denda:", err.message);
+    console.error("[CRON] ERROR:", err.message);
   }
+}, {
+  scheduled: true,
+  timezone: "Asia/Jakarta"
 });
-
 
 
 const app = express();
@@ -47,3 +49,7 @@ app.use(apiErrorHandler);
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
+
+/* ingattttt
+tambahkan di api pengembalian buku penghapusan harga penalti jika buku sudah dikembalikan
+*/
