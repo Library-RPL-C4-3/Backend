@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const cron = require("node-cron");
+const moment = require("moment-timezone");
 
 
 
@@ -12,6 +13,7 @@ const loanRoutes = require("./routes/loanRoutes");
 const authRoutes = require("./routes/authRoutes");
 const penaltyRoutes = require("./routes/penaltyRoutes");
 const { checkAndApplyPenalties } = require("./services/penaltyService");
+const { sendReminders } = require("./services/reminderService");
 
 //cron scheduler
 cron.schedule("0 1 * * *", async () => {
@@ -25,6 +27,18 @@ cron.schedule("0 1 * * *", async () => {
 }, {
   scheduled: true,
   timezone: "Asia/Jakarta"
+});
+
+cron.schedule("0 8 * * *", async () => {
+  console.log("[CRON] Mengecek reminder email...");
+  try {
+    const result = await sendReminders();
+    console.log(`[CRON] Email terkirim: ${result.reminders_sent}`);
+  } catch (err) {
+    console.error("[CRON] Gagal kirim email:", err.message);
+  }
+}, {
+  timezone: moment.tz.guess()
 });
 
 
