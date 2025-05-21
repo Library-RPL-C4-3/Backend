@@ -41,6 +41,25 @@ class BookController {
       next(err);
     }
   }
+
+  static async searchBooks(req, res, next) {
+    try {
+      const books = await bookService.searchBooks(req.query.q || "");
+      res.status(200).json({ success: true, data: books });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async getBooksByCategory(req, res, next) {
+    try {
+      const books = await bookService.getBooksByCategory(req.params.id);
+      res.status(200).json({ success: true, data: books });
+    } catch (err) {
+      next(err);
+    }
+  }
+
 }
 
 module.exports = BookController;

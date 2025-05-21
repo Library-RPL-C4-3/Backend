@@ -72,9 +72,40 @@ async function deleteBook(id) {
   }
 }
 
+async function searchBooks(keyword) {
+  const like = `%${keyword}%`;
+  const [rows] = await db.query(
+    `SELECT b.*, c.name AS category_name
+     FROM books b
+     LEFT JOIN categories c ON b.category_id = c.id
+     WHERE b.title LIKE ? OR b.author LIKE ? OR c.name LIKE ?`,
+    [like, like, like]
+  );
+
+  if (rows.length === 0) {
+    throw ApiError.notFound(`Buku dengan keyword "${keyword}" tidak ditemukan`);
+  }
+
+  return rows;
+}
+
+async function getBooksByCategory(categoryId) {
+  const [rows] = await db.query(
+    `SELECT b.*, c.name as category_name
+     FROM books b
+     JOIN categories c ON b.category_id = c.id
+     WHERE b.category_id = ?`,
+    [categoryId]
+  );
+  return rows;
+}
+
+
 module.exports = {
   getAllBooks,
   createBook,
   updateBook,
   deleteBook,
+  searchBooks,
+  getBooksByCategory
 };

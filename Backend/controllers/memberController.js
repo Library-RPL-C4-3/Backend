@@ -36,6 +36,26 @@ class MemberController {
       next(err);
     }
   }
+
+  static async searchMembers(req, res, next) {
+    try {
+      const members = await memberService.searchMembers(req.query.q || "");
+      res.status(200).json({ success: true, data: members });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async getMemberDetail(req, res, next) {
+    try {
+      const data = await memberService.getMemberDetail(req.params.nim);
+      res.status(200).json({ success: true, data });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+
 }
 
 module.exports = MemberController;
